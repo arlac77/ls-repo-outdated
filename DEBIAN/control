@@ -1,0 +1,8 @@
+Package: ls-repo-outdated
+Version: 1.0.0
+Depends: perl
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Markus Felten <Markus.Felten@gmx.de>
+Description: poor mans semantic-release

@@ -1,0 +1,65 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+      - next
+  pull_request:
+    branches:
+      - master
+      - next
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.2.0
+      - name: install dependencies
+        run: >
+          if [ ! -f /usr/bin/pacman ]
+
+          then
+
+          sudo apt-get update
+
+          sudo apt-get install ksh curl
+
+          wget
+          https://github.com/ThePoorPilot/pacman-utils/releases/download/5.2.2-3_2.31-0/pacman-utils_5.2.2-3_amd64.deb
+
+          sudo apt-get install -f ./pacman-utils_5.2.2-3_amd64.deb
+
+          fi
+      - name: release
+        run: ./semantic-release
+      - name: create arch package
+        run: makepkg --nodeps
+      - name: prepare
+        run: mkdir dist
+      - name: create debian package
+        run: dpkg -b . dist
+      - name: Upload arch-linux binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: semantic-release-*.pkg.*
+          asset_name: arch-linux
+          tag: ${{ github.ref }}
+          file_glob: true
+      - name: Upload debian binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/*.deb
+          asset_name: debian
+          tag: ${{ github.ref }}
+          file_glob: true
+
+  
