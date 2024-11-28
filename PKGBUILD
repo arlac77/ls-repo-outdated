@@ -1,7 +1,7 @@
 pkgname=ls-repo-outdated
 pkgver=1.0.0
 pkgrel=0
-pkgdesc='poor mans semantic-release'
+pkgdesc='list outdated packages form package repositories (.deb,.rpm,.pkg.tar)'
 arch=('any')
 url='https://github.com/arlac77/ls-repo-outdated.git'
 license=(MIT)
