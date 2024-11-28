@@ -1,5 +1,5 @@
 pkgname=ls-repo-outdated
-pkgver=1.0.0
+pkgver=1.1.0
 pkgrel=0
 pkgdesc='list outdated packages form package repositories (.deb,.rpm,.pkg.tar)'
 arch=('any')
