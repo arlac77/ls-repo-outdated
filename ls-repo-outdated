@@ -2,8 +2,8 @@
 use strict;
 
 my $dir = shift || '.';
-my $keep = 1;
 my $bases = {};
+my @keep = ([".*", 1]);
 
 sub process {
 	my $dir = shift;
@@ -18,6 +18,15 @@ sub process {
 			next;
 		}
 
+		if($file eq ".keep") {
+			open(F,"<$dir/.keep") || die("$dir/.keep: $!");
+			while(my $line=<F>) {
+				$line =~ /(.*)\s+(\d+)$/;
+				unshift @keep, [$1,$2];
+			}
+			close(F);
+			next;
+		}
     	if($file =~ /(.*)-([^\-]+)-(\d+)-(\w+)\.pkg\.tar\.\w+$/) {
     	    $bases->{$1 . ':' . $4}->{versions}->{$2 . '-' . $3} = $name;
     	}
@@ -34,10 +43,17 @@ sub process {
 
 process($dir);
 
-while(my($k,$v)= each %$bases) {
+while(my($name,$v)= each %$bases) {
     my @versions = sort versioncmp keys %{$v->{versions}};
+	my($m,$n);
+	$n = 1;
 
-	for my $i (1...$keep) {
+	foreach my $k (@keep) {
+		($m,$n)=@$k;
+		last if($name =~ /$m/);
+	}
+
+	for my $i (1...$n) {
     	pop @versions;
 	}
 
